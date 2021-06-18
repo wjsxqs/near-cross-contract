@@ -13,7 +13,7 @@ pub struct Contract {}
 
 #[near_bindgen]
 impl Contract {
-    pub fn call_a(&mut self, account_a: String) {
+    pub fn call_a(&mut self, account_a: String, account_a2: String) {
         let sender = env::predecessor_account_id();
         log!("sender {}", sender);
 
@@ -22,19 +22,16 @@ impl Contract {
             1,
             SINGLE_CALL_GAS
         )
+        .and(ext_promise_a::get_message(
+            &account_a2,
+            1,
+            SINGLE_CALL_GAS
+        ))
         .then(ext_self::on_data(
             &env::current_account_id(),
             0,
             SINGLE_CALL_GAS
         ));
-
-        // let result = ext_promise_a::get_message(
-        //     &account_a,
-        //     1,
-        //     SINGLE_CALL_GAS
-        // );
-
-        // log!("result {}", result);
 
         log!("after call");
         env::value_return(b"Test");
@@ -43,17 +40,17 @@ impl Contract {
     pub fn on_data(
         &mut self,
         #[callback] value_of_a: String,
-        #[callback] value_of_c: String,
+        #[callback] value_of_a2: String
     ) -> String {
         log!(
-            "I am {}. Called by {}. on_data: a {}, c {}",
+            "I am {}. Called by {}. on_data: a {}, a2 {}",
             env::current_account_id(),
             env::predecessor_account_id(),
             value_of_a,
-            value_of_c
+            value_of_a2,
         );
 
-        format!("on_data {}.{}", value_of_a, value_of_c)
+        format!("on_data {}-{}", value_of_a, value_of_a2)
     }
 }
 
