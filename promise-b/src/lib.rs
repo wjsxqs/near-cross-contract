@@ -28,6 +28,14 @@ impl Contract {
             SINGLE_CALL_GAS
         ));
 
+        // let result = ext_promise_a::get_message(
+        //     &account_a,
+        //     1,
+        //     SINGLE_CALL_GAS
+        // );
+
+        // log!("result {}", result);
+
         log!("after call");
         env::value_return(b"Test");
     }
